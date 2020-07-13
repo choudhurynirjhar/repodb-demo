@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RepoDb.Interfaces;
 
 namespace RepoDb.Demo
 {
@@ -31,7 +32,16 @@ namespace RepoDb.Demo
 
             services.AddSingleton<IWarehouseProcedureRepo>(new WarehouseProcedureRepo(connection));
 
-            services.AddSingleton<IWarehouseProvider>(new WarehouseProvider(connection));
+            services.AddSingleton<IWarehouseProvider>(c =>
+                new WarehouseProvider(connection, c.GetService<ICache>()));
+
+            services.AddSingleton<IWareHouseUpdator>(c =>
+                new WareHouseUpdator(connection, c.GetService<ITrace>()));
+
+            services.AddSingleton<IWareHouseDeletor>(new WareHouseDeletor(connection));
+
+            services.AddSingleton<ICache, MemoryCache>();
+            services.AddSingleton<ITrace, CustomTrace>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

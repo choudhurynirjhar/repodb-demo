@@ -11,18 +11,24 @@ namespace RepoDb.Demo.Controllers
         private readonly IWarehouseInlineRepo warehouseInlineRepo;
         private readonly IWarehouseProcedureRepo warehouseProcedureRepo;
         private readonly IWarehouseProvider warehouseProvider;
+        private readonly IWareHouseUpdator wareHouseUpdator;
+        private readonly IWareHouseDeletor wareHouseDeletor;
 
         public WarehouseController(WarehouseRepository warehouseRepository,
             IWarehouseObjectRepo warehouseObjectRepo,
             IWarehouseInlineRepo warehouseInlineRepo,
             IWarehouseProcedureRepo warehouseProcedureRepo,
-            IWarehouseProvider warehouseProvider)
+            IWarehouseProvider warehouseProvider,
+            IWareHouseUpdator wareHouseUpdator,
+            IWareHouseDeletor wareHouseDeletor)
         {
             this.warehouseRepository = warehouseRepository;
             this.warehouseObjectRepo = warehouseObjectRepo;
             this.warehouseInlineRepo = warehouseInlineRepo;
             this.warehouseProcedureRepo = warehouseProcedureRepo;
             this.warehouseProvider = warehouseProvider;
+            this.wareHouseUpdator = wareHouseUpdator;
+            this.wareHouseDeletor = wareHouseDeletor;
         }
 
         [HttpGet]
@@ -40,7 +46,14 @@ namespace RepoDb.Demo.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Warehouse warehouse)
         {
-            warehouseProcedureRepo.Add(warehouse);
+            wareHouseUpdator.Update(warehouse);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            wareHouseDeletor.Delete(id);
             return Ok();
         }
     }
